@@ -47,14 +47,17 @@ frozen_x, frozen_y = 0, 0
 # V3 One-Hand State
 pinch_start_time = 0 
 
+# --- NEW: SYSTEM SLEEP STATE ---
+is_sleeping = False
+
 cooldowns = {
-    'play': 0, 'swipe': 0, 'vol': 0, 'bright': 0, 'sys_keys': 0, 'right_click': 0
+    'play': 0, 'swipe': 0, 'vol': 0, 'bright': 0, 'sys_keys': 0, 'right_click': 0, 'sleep': 0
 }
 
 def get_dist(p1, p2, w, h):
     return math.hypot((p1.x - p2.x) * w, (p1.y - p2.y) * h)
 
-print("VISION OS V4 HYBRID Online. Auto-Switching Active (1-Hand & 2-Hand Modes).")
+print("VISION OS V4 HYBRID Online. Auto-Switching Active. THUMBS DOWN to Pause.")
 
 while cap.isOpened():
     success, img = cap.read()
@@ -98,7 +101,7 @@ while cap.isOpened():
         # ==========================================
         # 1. PROCESS LEFT HAND (Only in 2-Hand Mode)
         # ==========================================
-        if mode == 2 and left_hand:
+        if mode == 2 and left_hand and not is_sleeping:
             mp_draw.draw_landmarks(img, left_hand, mp_hands.HAND_CONNECTIONS)
             lm = left_hand.landmark
             palm_width = get_dist(lm[5], lm[17], w, h)
@@ -125,6 +128,25 @@ while cap.isOpened():
             ]
             thumb_out = 1 if lm[4].x < lm[3].x else 0 
             
+            # --- GLOBAL SLEEP TOGGLE (THUMBS DOWN) ---
+            # Fingers folded into a fist, and thumb tip (4) is pointing down below the thumb knuckle (2)
+            if sum(fingers) == 0 and lm[4].y > lm[2].y:
+                if time.time() - cooldowns['sleep'] > 1.5:
+                    is_sleeping = not is_sleeping
+                    cooldowns['sleep'] = time.time()
+                    if dragging: # Safety release if you sleep while dragging
+                        pyautogui.mouseUp()
+                        dragging = False
+                
+                cv2.putText(img, "TOGGLING SLEEP MODE...", (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 165, 255), 3)
+                continue # Skip the rest of this frame
+                
+            # --- SLEEP GATEKEEPER ---
+            if is_sleeping:
+                cv2.putText(img, "SYSTEM PAUSED: THUMBS DOWN TO WAKE", (20, 70), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 3)
+                continue # Kills all processing, math, and mouse movement beyond this point
+
+            # (Normal Processing resumes here if awake)
             ix, iy = int(lm[8].x * w), int(lm[8].y * h)
             wx, wy = int(lm[0].x * w), int(lm[0].y * h)
             wrist_history_x.append(wx)
@@ -269,21 +291,22 @@ while cap.isOpened():
     # ==========================================
     # 3. GLOBAL CLICK EXECUTION
     # ==========================================
-    if left_click_held:
-        click_text = "LEFT CLICK (LEFT HAND)" if mode == 2 else "LEFT CLICK (1-HAND)"
-        cv2.putText(img, click_text, (20, 110), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
-        if not dragging:
-            pyautogui.mouseDown()
-            dragging = True
-    else:
-        if dragging:
-            pyautogui.mouseUp()
-            dragging = False
+    if not is_sleeping: # Don't execute clicks if we are asleep
+        if left_click_held:
+            click_text = "LEFT CLICK (LEFT HAND)" if mode == 2 else "LEFT CLICK (1-HAND)"
+            cv2.putText(img, click_text, (20, 110), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 255, 0), 2)
+            if not dragging:
+                pyautogui.mouseDown()
+                dragging = True
+        else:
+            if dragging:
+                pyautogui.mouseUp()
+                dragging = False
 
-    if right_click_triggered and (time.time() - cooldowns['right_click'] > 0.5):
-        cv2.putText(img, "RIGHT CLICK", (20, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
-        pyautogui.rightClick()
-        cooldowns['right_click'] = time.time()
+        if right_click_triggered and (time.time() - cooldowns['right_click'] > 0.5):
+            cv2.putText(img, "RIGHT CLICK", (20, 150), cv2.FONT_HERSHEY_SIMPLEX, 0.8, (0, 0, 255), 2)
+            pyautogui.rightClick()
+            cooldowns['right_click'] = time.time()
 
     cv2.imshow("VISION OS V4 HYBRID", img)
     if cv2.waitKey(1) & 0xFF == ord('q'): break
