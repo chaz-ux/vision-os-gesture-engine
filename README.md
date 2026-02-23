@@ -1,6 +1,6 @@
 
 
-# 👁️🖐️ Vision OS V4: Hybrid Hand-Tracking Gesture Engine
+# 👁️🖐️ Vision OS V4: Hand-Tracking Gesture Engine
 
 **Vision OS V4** is an advanced Python-based computer vision engine that turns your standard webcam into a spatial computing interface. It maps physical hand gestures to operating system commands using MediaPipe and OpenCV.
 
