@@ -1,173 +1,108 @@
 
+<div align="center">
 
-# 👁️🖐️ Vision OS V4: Hybrid Hand-Tracking Gesture Engine
+# 👁️🖐️ Vision OS V5 Pro
 
-Vision OS V5 Pro is an advanced Python-based computer vision engine that turns your standard webcam into a spatial computing interface. It maps physical hand gestures to operating system commands using MediaPipe, OpenCV, and advanced kinematic smoothing.
+**Advanced Kinematic Gesture Engine for Spatial Computing**
 
-Unlike standard trackers that jump and stutter, V5 introduces a Dynamic EMA (Exponential Moving Average) Smoother with a built-in physical deadzone, an Intentionality Engine to prevent accidental clicks, and Edge-Clamped Navigation allowing effortless access to your entire screen.
+*Transform your standard webcam into a high-precision spatial computing interface. Map physical hand gestures to operating system commands using MediaPipe, OpenCV, and advanced kinematic smoothing.*
 
-✨ V5 Core Features
+[Features](https://www.google.com/search?q=%23-v5-pro-core-features) • [Installation](https://www.google.com/search?q=%23%25EF%25B8%258F-installation--setup) • [Gesture Manual](https://www.google.com/search?q=%23-the-gesture-matrix) • [Under the Hood](https://www.google.com/search?q=%23-under-the-hood) • [Troubleshooting](https://www.google.com/search?q=%23-troubleshooting)
 
-Edge-to-Edge Navigation (NEW): Utilizes numpy.interp clamping on a defined visual boundary. Reaching the edge of the purple on-screen box maps perfectly to the edge of your monitor, allowing easy access to the taskbar and screen corners without your hand leaving the camera frame.
+</div>
 
-Intentionality Engine (NEW): Heavy commands (like window switching via Open Palm) now require a brief "Hold to Engage" timer. This completely eliminates accidental window-snapping when simply stretching or opening your hand.
+## 🚀 The Vision OS Difference
 
-Micro-Jitter Deadzone (NEW): The cursor mathematically ignores pixel-level wrist twitches. It remains frozen until deliberate gliding movement is detected, providing a "heavy," ultra-precise feel.
+Unlike standard optical trackers that jump, stutter, and accidentally click when you move your hand, **Vision OS V5 Pro** introduces robust mathematical filtering. By utilizing a Dynamic Exponential Moving Average (EMA) smoother, built-in physical deadzones, and an Intentionality Engine, V5 provides a heavy, ultra-precise, "surgical" feel previously reserved for dedicated spatial hardware.
 
-Velocity-Based Swipes (NEW): Swiping to change tracks or switch desktops now calculates actual hand velocity over a history buffer, rather than just raw distance.
+## ✨ V5 Pro Core Features
 
-Hysteresis Anti-Flicker: Finger states require a multi-frame buffer to register a change, stopping the AI from rapidly flickering between gestures if it loses confidence.
+* **Edge-Clamped Spatial Navigation:** Utilizes `numpy.interp` clamping on a defined visual boundary. Reaching the edge of the on-screen tracking box maps perfectly to the edge of your monitor—access your taskbar and screen corners without your hand ever leaving the camera frame.
+* **Intentionality Engine:** Heavy commands (like window snapping via Open Palm) require a brief "Hold to Engage" timer (0.25s). This completely eliminates accidental UI triggers when simply stretching or opening your hand.
+* **Kinematic Micro-Jitter Deadzone:** The cursor mathematically ignores pixel-level wrist twitches. It remains frozen until deliberate, gliding movement is detected.
+* **Velocity-Based Swipes:** Swiping to change tracks or switch desktops calculates actual hand velocity over a dynamic history buffer, rather than relying on raw distance.
+* **Hysteresis Anti-Flicker:** Finger states require a multi-frame buffer to register a change, stopping the AI from rapidly flickering between states if camera confidence drops.
+* **Auto-Switching Hybrid Modes:** Seamlessly transitions between **1-Hand Mode** (casual browsing) and **2-Hand Pro Mode** (high-precision dual-hand control) on the fly.
 
-Auto-Switching Hybrid Modes: Seamlessly transitions between 1-Hand Mode (casual browsing) and 2-Hand Pro Mode (high-precision dual-hand control).
+## 🛠️ Installation & Setup
 
-🛠️ Installation & Setup
+**1. Clone the repository**
 
-Clone the repository:
-
-git clone [https://github.com/chaz-ux/vision-os-gesture-engine.git](https://github.com/chaz-ux/vision-os-gesture-engine.git)
+```bash
+git clone https://github.com/chaz-ux/vision-os-gesture-engine.git
 cd vision-os-gesture-engine
 
+```
 
-Install the required dependencies:
+**2. Install required dependencies**
 
+```bash
 pip install opencv-python mediapipe pyautogui screen-brightness-control numpy
 
+```
 
-Run the engine:
+**3. Run the engine**
 
+```bash
 python vision_os_pro.py
 
+```
 
-(Note: Ensure your terminal/IDE has permission to control your mouse/keyboard and access your camera).
+> **Note:** Ensure your terminal/IDE has the necessary OS permissions to control your mouse/keyboard and access your webcam.
 
-🎛️ The Gesture Manual
+## 🎛️ The Gesture Matrix
 
-🖱️ Modes & Navigation
+### 🖱️ Modes & Navigation
 
-Action
+| Action | Gesture | Description |
+| --- | --- | --- |
+| **System Sleep / Wake** | 👎 **Thumbs Down** | Fold fingers into a fist, point thumb straight down. Pauses the tracking engine to save CPU. |
+| **1-Hand Mode** | ☝️ **One Hand Active** | AI routes all movement and clicking logic to your active hand. |
+| **2-Hand Mode (Pro)** | 👐 **Two Hands Active** | Routes cursor movement to **Right Hand**, clicking logic to **Left Hand**. |
+| **Move Cursor** | ☝️ **Point** | Point with Index Finger. Reach the edges of the tracking box to reach screen edges. |
+| **Auto-Scroll** | ✌️ **Two Fingers** | Hold Index & Middle fingers up. Move hand above/below the center deadzone to kinetically scroll. |
 
-Gesture
+### 🎯 Clicking Mechanics
 
-Description
+| Action | Gesture | Description |
+| --- | --- | --- |
+| **Left Click / Drag** | 🤏 **Index Pinch** | Pinch Index Finger and Thumb together. *(Do this with Left Hand in 2-Hand Mode).* |
+| **Right Click** | 🤌 **Middle Pinch** | Pinch Middle Finger and Thumb together underneath the index finger. |
 
-System Sleep / Wake
+### 🔊 System & Media Controls
 
-👎 Thumbs Down
+| Action | Gesture | Description |
+| --- | --- | --- |
+| **Volume Control** | 🤙 **The "Shaka"** | Thumb and Pinky out. Twist your wrist up to increase volume, down to decrease. |
+| **Brightness** | ✌️ **Scout Sign** | Index, Middle, and Ring fingers up. Tilt hand up to brighten, down to dim. |
+| **Play / Pause** | 🕸️ **Web-Shooter** | Index and Pinky fingers up, Thumb out. Swipe left/right rapidly to change tracks. |
 
-Fold fingers into a fist, point thumb straight down. Pauses the tracking engine to save CPU.
+### 🖥️ Window Management & Hotkeys
 
-1-Hand Mode
+| Action | Gesture | Description |
+| --- | --- | --- |
+| **Command Mode** | ✋ **Stop Sign (Hold)** | Open hand completely and hold for `0.25s`. Once engaged, swipe Left/Right to snap windows, or Down for desktop. |
+| **Escape Key** | ✌️+👍 **Peace + Thumb** | Hold Index and Middle fingers up, with Thumb sticking out. |
+| **Start Menu (Win)** | 👌 **"OK" Sign** | Pinch Index and Thumb together, leaving Middle, Ring, and Pinky fingers up. |
 
-☝️ One Hand on Camera
+## 🧠 Under the Hood
 
-AI routes all movement and clicking logic to your active hand.
+Vision OS V5 Pro relies on MediaPipe's hand landmark detection, tracking 21 distinct 3D landmarks in real-time. We bridge the gap between raw data and smooth UX using two core architectures:
 
-2-Hand Mode (Pro)
+1. **The State Machine (`HandAnalyzer`)**
+Instead of trusting raw frame-by-frame data, V5 routes finger detection through a **Hysteresis buffer**. A finger must consistently read as "Open" or "Closed" for 5 consecutive frames before the system registers a state change.
+2. **Advanced Kinematics (`DynamicSmoother`)**
+Raw X/Y coordinates pass through an Exponential Moving Average (EMA) algorithm. The smoothing weight () dynamically scales based on your hand's velocity. Move fast, and smoothing drops to zero for latency-free tracking. Move slow, and smoothing increases drastically to allow for surgical precision.
 
-👐 Two Hands on Camera
+## ⚠️ Troubleshooting & Configuration
 
-AI routes cursor movement to your Right hand, and clicking logic to your Left hand.
+| Issue | Solution |
+| --- | --- |
+| **Cannot reach the edges of the screen** | Ensure your hand reaches the edges of the purple *Active Tracking Boundary* on the camera feed. Adjust `Config.Tracking.FRAME_MARGIN` in the code to make this box smaller/easier to reach. |
+| **Cursor feels stuck or heavy** | This is the Deadzone filter preventing jitter. If it requires too much physical force to move the mouse, lower `Config.Cursor.DEADZONE` in the script. |
+| **Gestures aren't triggering** | Face your palm directly toward the camera. Ensure your room is well-lit and your background isn't overly cluttered. |
+| **Brightness control throws an error** | Ensure you are running on a supported OS for `screen-brightness-control` (Windows/Linux primary displays only). |
 
-Move Cursor
-
-☝️ Point
-
-Point with just your Index Finger. Reach the edges of the purple tracking box to reach the edges of your screen.
-
-Auto-Scroll
-
-✌️ Two Fingers
-
-Hold Index and Middle fingers up (Thumb tucked). Move hand above or below the center "deadzone" to kinetically scroll up/down.
-
-🎯 Clicking Mechanics
-
-Action
-
-Gesture
-
-Description
-
-Left Click / Drag
-
-🤏 Index Pinch
-
-Pinch your Index Finger and Thumb together. (In 2-Hand Mode, do this with your Left Hand).
-
-Right Click
-
-🤌 Middle Pinch
-
-Pinch your Middle Finger and Thumb together underneath your index finger.
-
-🔊 System & Media Controls
-
-Action
-
-Gesture
-
-Description
-
-Volume Control
-
-🤙 The "Shaka"
-
-Stick your Thumb and Pinky out. Twist your wrist up to increase volume, down to decrease.
-
-Brightness Control
-
-✌️ Scout Sign
-
-Hold Index, Middle, and Ring fingers up. Tilt hand up to brighten, down to dim.
-
-Play / Pause
-
-🕸️ "Web-Shooter"
-
-Hold Index and Pinky fingers up with Thumb out. Swipe left/right rapidly to change tracks.
-
-🖥️ Window Management & Hotkeys
-
-Action
-
-Gesture
-
-Description
-
-Command Mode (Snap/Desk)
-
-✋ Stop Sign (Hold)
-
-Open hand completely and hold for 0.25s. Once engaged, swipe fast Left/Right to snap windows, or Down for desktop.
-
-Escape Key
-
-✌️ + 👍 Peace + Thumb
-
-Hold Index and Middle fingers up, with Thumb sticking out.
-
-Start Menu (Win)
-
-👌 "OK" Sign
-
-Pinch Index and Thumb together, leaving Middle, Ring, and Pinky fingers up.
-
-⚙️ Under the Hood
-
-Vision OS V5 Pro relies on MediaPipe's hand landmark detection, tracking 21 distinct 3D landmarks on your hand in real-time.
-
-The State Machine (HandAnalyzer):
-Instead of trusting raw frame-by-frame data, V5 routes finger detection through a Hysteresis buffer. A finger must consistently read as "Open" or "Closed" for 5 consecutive frames before the system registers a state change.
-
-Kinematics (DynamicSmoother):
-Raw X/Y coordinates are passed through an Exponential Moving Average (EMA) algorithm. The alpha (smoothing weight) dynamically scales based on how fast your hand is moving. Move fast, and smoothing drops to zero for zero-latency tracking. Move slow, and smoothing increases drastically to allow surgical precision. A strict physical deadzone prevents micro-jitters from registering at all.
-
-⚠️ Troubleshooting
-
-Cannot reach the edges of the screen: Ensure your hand is moving all the way to the edges of the purple Active Tracking Boundary drawn on the camera feed. You can adjust Config.Tracking.FRAME_MARGIN in the code to make this box smaller/easier to reach.
-
-Cursor feels stuck / heavy: This is the Deadzone filter preventing jitter. If it requires too much force to move the mouse, lower Config.Cursor.DEADZONE in the script.
-
-Gestures aren't triggering: Face your palm directly toward the camera. Ensure your room is well-lit.
-
-Brightness control throws an error: Ensure you are running on a supported OS for screen-brightness-control (Windows/Linux primary displays).
+<div align="center">
+<i>Engineered for the future of spatial computing.</i>
+</div>
